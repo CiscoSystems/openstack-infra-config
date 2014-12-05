@@ -2,6 +2,7 @@
 *.swp
 *~
 *.pyc
+get-pip.py
 applytest
 doc/build/
 manifests/secrets.pp

@@ -1,0 +1,9 @@
+---
+# file: vagrant.yml
+# VM config file for the Vagrant development environment
+
+hosts:
+    puppet:
+      private_ip: 192.168.10.20
+      memory: 1024
+      box: hashicorp/precise64
