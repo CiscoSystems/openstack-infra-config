@@ -6,6 +6,13 @@ require 'yaml'
 $env = YAML::load_file('vagrant.yml')
 
 Vagrant.configure('2') do |config|
+
+    # Local name resolution via the vagrant-hostmanager plugin
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+
     # Create and provision each host as defined in the site's YAML file
     $env['hosts'].each do |host_name, host_config|
         config.vm.define host_name do |host|
@@ -14,6 +21,7 @@ Vagrant.configure('2') do |config|
             host.vm.box = host_config['box']
             host.vm.network 'private_network', :ip => host_config['private_ip']
             host.vm.host_name = "#{host_name}.local"
+            host.hostmanager.aliases = ["#{host_name}"]
 
             if host_config['ports']
                 host_config['ports'].each do |port|

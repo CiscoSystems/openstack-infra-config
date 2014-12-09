@@ -7,3 +7,8 @@ hosts:
       private_ip: 192.168.10.20
       memory: 1024
       box: hashicorp/precise64
+
+    jenkins:
+          private_ip: 192.168.10.21
+          memory: 1024
+          box: hashicorp/precise64
