@@ -42,11 +42,9 @@ Vagrant.configure('2') do |config|
                 vmware.gui = false
             end
 
-            # Provision puppet and install modules on the puppet host
-            if host_name == "puppet"
-                host.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-                host.vm.provision "shell", privileged: true, inline: "cd /vagrant/ && ./install_puppet.sh && ./install_modules.sh"
-            end
+            # Provision puppet and install modules on the toolchain-aio host
+            host.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+            host.vm.provision "shell", privileged: true, inline: "cd /vagrant/ && ./install_puppet.sh && ./install_modules.sh"
         end
     end
 end
