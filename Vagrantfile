@@ -17,10 +17,13 @@ Vagrant.configure('2') do |config|
     $env['hosts'].each do |host_name, host_config|
         config.vm.define host_name do |host|
             host.vm.synced_folder '.', '/vagrant', :disabled => false
+            host.vm.synced_folder './modules', '/modules', :disabled => false
 
             host.vm.box = host_config['box']
             host.vm.network 'private_network', :ip => host_config['private_ip']
             host.vm.host_name = "#{host_name}.local"
+
+
             host.hostmanager.aliases = ["#{host_name}"]
 
             if host_config['ports']
@@ -50,9 +53,21 @@ Vagrant.configure('2') do |config|
                 vmware.gui = false
             end
 
-            # Provision puppet and install modules on the toolchain-aio host
-            host.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-            host.vm.provision "shell", privileged: true, inline: "cd /vagrant/ && ./install_puppet.sh && ./install_modules.sh"
+            # ---------
+            # Provision
+            # ---------
+
+            # Install Puppet and all required 3rd party modules
+            host.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
+            host.vm.provision 'shell', privileged: true, inline: 'cd /vagrant/ && ./install_puppet.sh && ./install_modules.sh'
+
+            # Run puppet apply using our manifest, as such
+            # puppet apply -l /tmp/manifest.log --modulepath=modules:/etc/puppet/modules manifests/vagrant.pp
+            # host.vm.provision 'puppet' do |puppet|
+            #     puppet.manifest_file = 'vagrant.pp'
+            #     puppet.working_directory = '/vagrant'
+            #     puppet.options = '-l /tmp/manifest.log --modulepath=/modules:/etc/puppet/modules'
+            # end
         end
     end
 end

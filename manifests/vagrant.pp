@@ -139,3 +139,50 @@ TmjvbWTiEF9kYVv9OWrctIrRq/5Y6qqeoB2vyGNJC9xLxDs=
     sysadmins                 => $sysadmins,
   }
 }
+
+node jenkins {
+  class { 'openstack_project::jenkins':
+#    project_config_repo     => 'https://git.openstack.org/openstack-infra/project-config',
+    jenkins_jobs_password   => 'password',
+    jenkins_ssh_private_key => 'XXX',
+    ssl_cert_file_contents  => '-----BEGIN CERTIFICATE-----
+MIICrTCCAhYCCQD+9RzQDj7NfDANBgkqhkiG9w0BAQUFADCBmjELMAkGA1UEBhMC
+VVMxCzAJBgNVBAgTAlROMRIwEAYDVQQHEwlOYXNodmlsbGUxHDAaBgNVBAoTE0Np
+c2NvIFN5c3RlbXMsIEluYy4xDDAKBgNVBAsTA0NWRzEbMBkGA1UEAxMSTWF0dGhl
+dyBNb250Z29tZXJ5MSEwHwYJKoZIhvcNAQkBFhJtYXR0bW9udEBjaXNjby5jb20w
+HhcNMTQxMjA1MjEyNjA1WhcNMTUxMjA1MjEyNjA1WjCBmjELMAkGA1UEBhMCVVMx
+CzAJBgNVBAgTAlROMRIwEAYDVQQHEwlOYXNodmlsbGUxHDAaBgNVBAoTE0Npc2Nv
+IFN5c3RlbXMsIEluYy4xDDAKBgNVBAsTA0NWRzEbMBkGA1UEAxMSTWF0dGhldyBN
+b250Z29tZXJ5MSEwHwYJKoZIhvcNAQkBFhJtYXR0bW9udEBjaXNjby5jb20wgZ8w
+DQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANXe5kt5KF2klYVbcajW8UiULuTAYJFf
+Toys+rYcWmKfjMQs0tOEeSYFciY4Wb3OFShZJl6JK7dpzI1HVzdcOBpcDaYmcRpc
+HfHTqp5sAJz76eQHhgKHEnUtEreXJFA0VMHDWUszUlXmzFwqJpbQdQjOrpT5wxwR
+bhgmgXuBQZ3dAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAptfAit0m2aD3nB+Ae3Ec
+8j+vXHSNGt9k7XMir+gqhd3UtVueb8z+UM3nop9ISazeHUN9B4Dj3xOwyBMgiSSt
+wweWiM/HwyPbYVf7y5xHNqRxYFyOjOcUwCQlgqisYQV0C9D4S+fEdy8vGXUcVC/+
+aDE2arZAfXhxnd71Hq6NWJs=
+-----END CERTIFICATE-----',
+    ssl_key_file_contents   => '-----BEGIN RSA PRIVATE KEY-----
+MIICXwIBAAKBgQDV3uZLeShdpJWFW3Go1vFIlC7kwGCRX06MrPq2HFpin4zELNLT
+hHkmBXImOFm9zhUoWSZeiSu3acyNR1c3XDgaXA2mJnEaXB3x06qebACc++nkB4YC
+hxJ1LRK3lyRQNFTBw1lLM1JV5sxcKiaW0HUIzq6U+cMcEW4YJoF7gUGd3QIDAQAB
+AoGBAL4Qg1VbbPYbiA2lwJKtwmwf1LTSCn/m1SXLrFsfQ2wWIsFMnGgBeLDDcjhp
+J8e4V7Et2R12hfVP/ssnNWkreWbDrrfZ/IMxmdmyugeu8Xi7YDzNGzRElFTnanKP
+1l35AFihHcgzdxfDNnm7ipJiCH9TQDUgbYQGx0XPWz+19r75AkEA7P6A9jxB6kFK
++MIlSYQP0biIAhX9gNY8huFSYVoNYeSSrdlWowwVRLc04u056EoQMrSeVfKJdEaT
+XIbfxBd3UwJBAOcFq7Qjha/KDaUHopjeXEidJxyVgb3tab9dOhbnTpiH9wbX9I7e
++LRgHj24Qo7SbpNYhotUSO1dnYhZpGSD4A8CQQCryXuPgXRCKpv+nzRKCskwuvMT
+l/8OsbxkBNYjLRSAPiA4lk8flvWfvrE+QLj18SG2r4gKQulx+Gp+6mEvEddzAkEA
+mLPH3gdI23xL7pSQZkk8aIbwDlXIb3kZV/NQbUkxS2M75lsifLlnXRrXgmZkIDF6
+A40VSc1JcxRZB4JxRjthAwJBAIgiY6nBjip1J4btDXcl7Y4KAHti5AEfNXWWnjXv
+TmjvbWTiEF9kYVv9OWrctIrRq/5Y6qqeoB2vyGNJC9xLxDs=
+-----END RSA PRIVATE KEY-----
+',
+    ssl_chain_file_contents => 'XXX',
+    sysadmins               => hiera('sysadmins', []),
+    zmq_event_receivers     => ['logstash.openstack.org',
+      'nodepool.openstack.org',
+      'nodepool-dev.openstack.org',
+    ],
+  }
+}
