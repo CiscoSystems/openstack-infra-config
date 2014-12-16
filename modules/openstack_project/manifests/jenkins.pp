@@ -61,22 +61,22 @@ class openstack_project::jenkins (
     version => '1.14',
   }
   jenkins::plugin { 'copyartifact':
-    version => '1.22',
+    version => '1.32.1',
   }
   jenkins::plugin { 'dashboard-view':
-    version => '2.3',
+    version => '2.9.4',
   }
   jenkins::plugin { 'envinject':
-    version => '1.70',
+    version => '1.90',
   }
   jenkins::plugin { 'gearman-plugin':
     version => '0.1.1',
   }
   jenkins::plugin { 'git':
-    version => '1.1.23',
+    version => '2.3.1',
   }
   jenkins::plugin { 'greenballs':
-    version => '1.12',
+    version => '1.14',
   }
   jenkins::plugin { 'extended-read-permission':
     version => '1.0',
@@ -89,34 +89,34 @@ class openstack_project::jenkins (
 #    version => '1.9',
 #  }
   jenkins::plugin { 'jobConfigHistory':
-    version => '1.13',
+    version => '2.10',
   }
   jenkins::plugin { 'monitoring':
-    version => '1.40.0',
+    version => '1.54.0',
   }
   jenkins::plugin { 'nodelabelparameter':
-    version => '1.2.1',
+    version => '1.5.1',
   }
   jenkins::plugin { 'notification':
-    version => '1.4',
+    version => '1.7',
   }
   jenkins::plugin { 'openid':
-    version => '1.5',
+    version => '2.1.1',
   }
   jenkins::plugin { 'postbuildscript':
     version => '0.16',
   }
   jenkins::plugin { 'publish-over-ftp':
-    version => '1.7',
+    version => '1.11',
   }
   jenkins::plugin { 'simple-theme-plugin':
-    version => '0.2',
+    version => '0.3',
   }
   jenkins::plugin { 'timestamper':
-    version => '1.3.1',
+    version => '1.5.14',
   }
   jenkins::plugin { 'token-macro':
-    version => '1.5.1',
+    version => '1.10',
   }
 
   if $manage_jenkins_jobs == true {
