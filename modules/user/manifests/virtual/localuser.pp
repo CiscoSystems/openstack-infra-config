@@ -4,6 +4,8 @@
 
 define user::virtual::localuser(
   $realname,
+  $uid,
+  $gid,
   $groups     = [ 'sudo', 'admin', ],
   $sshkeys    = '',
   $key_id     = '',
@@ -15,12 +17,14 @@ define user::virtual::localuser(
 
   group { $title:
     ensure => present,
+    gid    => $gid,
   }
 
   user { $title:
     ensure     => present,
     comment    => $realname,
-    gid        => $title,
+    uid        => $uid,
+    gid        => $gid,
     groups     => $groups,
     home       => $home,
     managehome => $managehome,

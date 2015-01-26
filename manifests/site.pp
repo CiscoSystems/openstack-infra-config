@@ -124,7 +124,6 @@ node 'jenkins.openstack.org' {
     sysadmins               => hiera('sysadmins', []),
     zmq_event_receivers     => ['logstash.openstack.org',
                                 'nodepool.openstack.org',
-                                'nodepool-dev.openstack.org',
     ],
   }
 }
@@ -140,7 +139,6 @@ node /^jenkins\d+\.openstack\.org$/ {
     sysadmins               => hiera('sysadmins', []),
     zmq_event_receivers     => ['logstash.openstack.org',
                                 'nodepool.openstack.org',
-                                'nodepool-dev.openstack.org',
     ],
   }
 }
@@ -171,13 +169,6 @@ node 'cacti.openstack.org' {
 }
 
 # Node-OS: precise
-node 'community.openstack.org' {
-  class { 'openstack_project::community':
-    sysadmins => hiera('sysadmins', []),
-  }
-}
-
-# Node-OS: precise
 node 'puppetmaster.openstack.org' {
   class { 'openstack_project::puppetmaster':
     root_rsa_key => hiera('puppetmaster_root_rsa_key', 'XXX'),
@@ -202,7 +193,6 @@ node 'graphite.openstack.org' {
     graphite_admin_password => hiera('graphite_admin_password', 'XXX'),
     statsd_hosts            => ['logstash.openstack.org',
                                 'nodepool.openstack.org',
-                                'nodepool-dev.openstack.org',
                                 'zuul.openstack.org'],
   }
 }
@@ -210,11 +200,14 @@ node 'graphite.openstack.org' {
 # Node-OS: precise
 node 'groups.openstack.org' {
   class { 'openstack_project::groups':
-    sysadmins           => hiera('sysadmins', []),
-    site_admin_password => hiera('groups_site_admin_password', 'XXX'),
-    site_mysql_host     => hiera('groups_site_mysql_host', 'localhost'),
-    site_mysql_password => hiera('groups_site_mysql_password', 'XXX'),
-    conf_cron_key       => hiera('groups_conf_cron_key', 'XXX'),
+    sysadmins                    => hiera('sysadmins', []),
+    site_admin_password          => hiera('groups_site_admin_password', 'XXX'),
+    site_mysql_host              => hiera('groups_site_mysql_host', 'localhost'),
+    site_mysql_password          => hiera('groups_site_mysql_password', 'XXX'),
+    conf_cron_key                => hiera('groups_conf_cron_key', 'XXX'),
+    site_ssl_cert_file_contents  => hiera('groups_site_ssl_cert_file_contents', undef),
+    site_ssl_key_file_contents   => hiera('groups_site_ssl_key_file_contents', undef),
+    site_ssl_chain_file_contents => hiera('groups_site_ssl_chain_file_contents', undef),
   }
 }
 
@@ -244,9 +237,10 @@ node 'lists.openstack.org' {
 # Node-OS: precise
 node 'paste.openstack.org' {
   class { 'openstack_project::paste':
-    db_host     => hiera('paste_db_host', 'localhost'),
-    db_password => hiera('paste_db_password', 'XXX'),
-    sysadmins   => hiera('sysadmins', []),
+    db_host             => hiera('paste_db_host', 'localhost'),
+    db_password         => hiera('paste_db_password', 'XXX'),
+    mysql_root_password => hiera('paste_mysql_root_password', 'XXX'),
+    sysadmins           => hiera('sysadmins', []),
   }
 }
 
@@ -314,10 +308,10 @@ node 'wiki.openstack.org' {
 # Node-OS: precise
 node 'logstash.openstack.org' {
   class { 'openstack_project::logstash':
-    sysadmins           => hiera('sysadmins', []),
-    elasticsearch_nodes => $elasticsearch_nodes,
-    gearman_workers     => $elasticsearch_clients,
-    discover_nodes      => [
+    sysadmins               => hiera('sysadmins', []),
+    elasticsearch_nodes     => $elasticsearch_nodes,
+    gearman_workers         => $elasticsearch_clients,
+    discover_nodes          => [
       'elasticsearch02.openstack.org:9200',
       'elasticsearch03.openstack.org:9200',
       'elasticsearch04.openstack.org:9200',
@@ -325,7 +319,8 @@ node 'logstash.openstack.org' {
       'elasticsearch06.openstack.org:9200',
       'elasticsearch07.openstack.org:9200',
     ],
-    subunit2sql_db_uri  => hiera('subunit2sql_db_uri', ''),
+    subunit2sql_db_host     => hiera('subunit2sql_db_host', ''),
+    subunit2sql_db_pass     => hiera('subunit2sql_db_password', ''),
   }
 }
 
@@ -343,7 +338,8 @@ node /^logstash-worker\d+\.openstack\.org$/ {
 node /^subunit-worker\d+\.openstack\.org$/ {
   class { 'openstack_project::subunit_worker':
     sysadmins             => hiera('sysadmins', []),
-    subunit2sql_db_uri    => hiera('subunit2sql_db_uri', ''),
+    subunit2sql_db_host => hiera('subunit2sql_db_host', ''),
+    subunit2sql_db_pass => hiera('subunit2sql_db_password', ''),
   }
 }
 
@@ -357,9 +353,9 @@ node /^elasticsearch0[1-7]\.openstack\.org$/ {
   }
 }
 
-# A CentOS machine to load balance git access.
+# CentOS machines to load balance git access.
 # Node-OS: centos6
-node 'git.openstack.org' {
+node /^git(-fe\d+)?\.openstack\.org$/ {
   class { 'openstack_project::git':
     sysadmins               => hiera('sysadmins', []),
     balancer_member_names   => [
@@ -507,7 +503,6 @@ node 'zuul.openstack.org' {
     statsd_host                    => 'graphite.openstack.org',
     gearman_workers                => [
       'nodepool.openstack.org',
-      'nodepool-dev.openstack.org',
       'jenkins.openstack.org',
       'jenkins01.openstack.org',
       'jenkins02.openstack.org',

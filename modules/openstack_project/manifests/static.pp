@@ -207,16 +207,6 @@ class openstack_project::static (
     require => File['/srv/static/docs-draft'],
   }
 
-  class { 'openstack_project::pypi_mirror':
-    vhost_name => 'pypi.openstack.org',
-  }
-
-  # Legacy pypi mirror
-  file { '/srv/static/mirror/web/openstack':
-    ensure  => absent,
-    force   => true,
-  }
-
   ###########################################################
   # Security
 
@@ -266,16 +256,6 @@ class openstack_project::static (
     owner   => 'jenkins',
     group   => 'jenkins',
     require => User['jenkins'],
-  }
-
-  file { '/srv/static/specs/index.html':
-    ensure  => present,
-    owner   => 'jenkins',
-    group   => 'jenkins',
-    mode    => '0444',
-    source  => $::project_config::specs_index_file,
-    require => [File['/srv/static/specs'],
-                $::project_config::config_dir],
   }
 
   ###########################################################

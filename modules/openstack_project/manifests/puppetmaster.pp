@@ -18,8 +18,6 @@ class openstack_project::puppetmaster (
     ca_server                 => $ca_server,
   }
 
-  $ansible_remote_puppet_source = 'puppet:///modules/openstack_project/ansible/remote_puppet.yaml'
-
   file {'/etc/puppet/environments':
     ensure => directory,
     owner  => 'root',
@@ -40,9 +38,7 @@ class openstack_project::puppetmaster (
     source => 'puppet:///modules/openstack_project/puppetmaster/production_environment.conf',
   }
 
-  class { 'ansible':
-    ansible_hostfile => '/etc/ansible/hostfile',
-  }
+  include ansible
 
   file { '/etc/ansible/hostfile':
     ensure  => present,
@@ -124,6 +120,15 @@ class openstack_project::puppetmaster (
     ensure => present,
   }
 
+  file { '/etc/apache2/sites-available/puppetmaster.conf':
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0600',
+    content => template('openstack_project/puppetmaster/puppetmaster_vhost.conf.erb'),
+    require => Package['puppetmaster-passenger'],
+  }
+
 # To set LANG to utf8, otherwise we get charset errors on manifests
 # with non-ascii chars
   file { '/etc/apache2/envvars':
@@ -164,15 +169,26 @@ class openstack_project::puppetmaster (
 
 # Playbooks
 #
-  file { '/etc/ansible/remote_puppet.yaml':
-    ensure  => present,
-    source  => $ansible_remote_puppet_source,
+  file { '/etc/ansible/playbooks':
+    ensure  => directory,
+    recurse => true,
+    source  => 'puppet:///modules/openstack_project/ansible/playbooks',
     require => Class[ansible],
   }
 
+  file { '/etc/ansible/remote_puppet.yaml':
+    ensure => absent,
+  }
+  file { '/etc/ansible/remote_puppet_afs.yaml':
+    ensure => absent,
+  }
+  file { '/etc/ansible/remote_puppet_else.yaml':
+    ensure => absent,
+  }
+  file { '/etc/ansible/remote_puppet_git.yaml':
+    ensure => absent,
+  }
   file { '/etc/ansible/clean_workspaces.yaml':
-    ensure  => present,
-    source  => 'puppet:///modules/openstack_project/ansible/clean_workspaces.yaml',
-    require => Class[ansible],
+    ensure => absent,
   }
 }

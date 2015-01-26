@@ -177,14 +177,19 @@ labels:
       - name: hpcloud-b3
       - name: hpcloud-b4
       - name: hpcloud-b5
-  - name: devstack-f20-virt-preview
-    image: devstack-f20-virt-preview
+  - name: devstack-f21
+    image: devstack-f21
     ready-script: configure_mirror.sh
     min-ready: 1
     providers:
       - name: rax-dfw
       - name: rax-ord
       - name: rax-iad
+      - name: hpcloud-b1
+      - name: hpcloud-b2
+      - name: hpcloud-b3
+      - name: hpcloud-b4
+      - name: hpcloud-b5
   - name: devstack-centos7
     image: devstack-centos7
     ready-script: configure_mirror.sh
@@ -201,7 +206,7 @@ labels:
   - name: devstack-centos7-dib
     image: devstack-centos7-dib
     ready-script: configure_mirror.sh
-    min-ready: 0
+    min-ready: 1
     providers:
       - name: hpcloud-b1
       - name: hpcloud-b2
@@ -213,11 +218,13 @@ labels:
     min-ready: 8
     providers:
       - name: tripleo-test-cloud-rh1
+      - name: tripleo-test-cloud-hp1
   - name: tripleo-f20
     image: tripleo-f20
     min-ready: 8
     providers:
       - name: tripleo-test-cloud-rh1
+      - name: tripleo-test-cloud-hp1
 
 providers:
   - name: rax-dfw
@@ -288,11 +295,11 @@ providers:
         setup: prepare_node_bare.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
-      - name: devstack-f20-virt-preview
-        base-image: 'Fedora 20 (Heisenbug) (PVHVM)'
+      - name: devstack-f21
+        base-image: 'Fedora 21 (PVHVM)'
         min-ram: 8192
         name-filter: 'Performance'
-        setup: prepare_node_devstack_virt_preview.sh
+        setup: prepare_node_devstack.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
@@ -370,11 +377,11 @@ providers:
         setup: prepare_node_bare.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
-      - name: devstack-f20-virt-preview
-        base-image: 'Fedora 20 (Heisenbug) (PVHVM)'
+      - name: devstack-f21
+        base-image: 'Fedora 21 (PVHVM)'
         min-ram: 8192
         name-filter: 'Performance'
-        setup: prepare_node_devstack_virt_preview.sh
+        setup: prepare_node_devstack.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
@@ -459,11 +466,11 @@ providers:
         setup: prepare_node_bare.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
-      - name: devstack-f20-virt-preview
-        base-image: 'Fedora 20 (Heisenbug) (PVHVM)'
+      - name: devstack-f21
+        base-image: 'Fedora 21 (PVHVM)'
         min-ram: 8192
         name-filter: 'Performance'
-        setup: prepare_node_devstack_virt_preview.sh
+        setup: prepare_node_devstack.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
@@ -499,6 +506,7 @@ providers:
     password: '<%= hpcloud_password %>'
     project-id: '<%= hpcloud_project %>'
     auth-url: 'https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0'
+    api-timeout: 60
     boot-timeout: 120
     max-servers: 100
     networks:
@@ -514,9 +522,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise
-        base-image: 'Ubuntu Server 12.04.5 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-precise
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise-dib
@@ -531,9 +538,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty
-        base-image: 'Ubuntu Server 14.04.1 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-trusty
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty-dib
@@ -563,6 +569,12 @@ providers:
         base-image: 'Fedora 20 Server 64-bit 20140407 - Partner Image'
         min-ram: 30720
         setup: prepare_node_bare.sh
+        username: jenkins
+        private-key: /home/nodepool/.ssh/id_rsa
+      - name: devstack-f21
+        base-image: 'Fedora 21 Cloud Base 64-bit 20141203 - Partner Image'
+        min-ram: 30720
+        setup: prepare_node_devstack.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
@@ -590,6 +602,7 @@ providers:
     password: '<%= hpcloud_password %>'
     project-id: '<%= hpcloud_project %>'
     auth-url: 'https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0'
+    api-timeout: 60
     boot-timeout: 120
     max-servers: 100
     networks:
@@ -605,9 +618,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise
-        base-image: 'Ubuntu Server 12.04.5 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-precise
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise-dib
@@ -622,9 +634,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty
-        base-image: 'Ubuntu Server 14.04.1 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-trusty
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty-dib
@@ -656,6 +667,12 @@ providers:
         setup: prepare_node_bare.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
+      - name: devstack-f21
+        base-image: 'Fedora 21 Cloud Base 64-bit 20141203 - Partner Image'
+        min-ram: 30720
+        setup: prepare_node_devstack.sh
+        username: jenkins
+        private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
         base-image: 'CentOS 7 x86_64 (2014-09-29) - Partner Image'
         min-ram: 30720
@@ -681,6 +698,7 @@ providers:
     password: '<%= hpcloud_password %>'
     project-id: '<%= hpcloud_project %>'
     auth-url: 'https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0'
+    api-timeout: 60
     boot-timeout: 120
     max-servers: 100
     networks:
@@ -696,9 +714,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise
-        base-image: 'Ubuntu Server 12.04.5 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-precise
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise-dib
@@ -713,9 +730,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty
-        base-image: 'Ubuntu Server 14.04.1 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-trusty
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty-dib
@@ -737,6 +753,12 @@ providers:
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-f20
         base-image: 'Fedora 20 Server 64-bit 20140407 - Partner Image'
+        min-ram: 30720
+        setup: prepare_node_devstack.sh
+        username: jenkins
+        private-key: /home/nodepool/.ssh/id_rsa
+      - name: devstack-f21
+        base-image: 'Fedora 21 Cloud Base 64-bit 20141203 - Partner Image'
         min-ram: 30720
         setup: prepare_node_devstack.sh
         username: jenkins
@@ -772,6 +794,7 @@ providers:
     password: '<%= hpcloud_password %>'
     project-id: '<%= hpcloud_project %>'
     auth-url: 'https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0'
+    api-timeout: 60
     boot-timeout: 120
     max-servers: 100
     networks:
@@ -788,9 +811,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise
-        base-image: 'Ubuntu Server 12.04.5 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-precise
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise-dib
@@ -805,9 +827,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty
-        base-image: 'Ubuntu Server 14.04.1 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-trusty
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty-dib
@@ -837,6 +858,12 @@ providers:
         base-image: 'Fedora 20 Server 64-bit 20140407 - Partner Image'
         min-ram: 30720
         setup: prepare_node_bare.sh
+        username: jenkins
+        private-key: /home/nodepool/.ssh/id_rsa
+      - name: devstack-f21
+        base-image: 'Fedora 21 Cloud Base 64-bit 20141203 - Partner Image'
+        min-ram: 30720
+        setup: prepare_node_devstack.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
@@ -864,6 +891,7 @@ providers:
     password: '<%= hpcloud_password %>'
     project-id: '<%= hpcloud_project %>'
     auth-url: 'https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0'
+    api-timeout: 60
     boot-timeout: 120
     max-servers: 100
     networks:
@@ -881,9 +909,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise
-        base-image: 'Ubuntu Server 12.04.5 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-precise
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-precise-dib
@@ -898,9 +925,8 @@ providers:
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty
-        base-image: 'Ubuntu Server 14.04.1 LTS (amd64 20140927) - Partner Image'
         min-ram: 30720
-        setup: prepare_node_devstack.sh
+        diskimage: devstack-trusty
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-trusty-dib
@@ -932,6 +958,12 @@ providers:
         setup: prepare_node_bare.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
+      - name: devstack-f21
+        base-image: 'Fedora 21 Cloud Base 64-bit 20141203 - Partner Image'
+        min-ram: 30720
+        setup: prepare_node_devstack.sh
+        username: jenkins
+        private-key: /home/nodepool/.ssh/id_rsa
       - name: devstack-centos7
         base-image: 'CentOS 7 x86_64 (2014-09-29) - Partner Image'
         min-ram: 30720
@@ -949,19 +981,19 @@ providers:
         setup: prepare_node_py3k.sh
         username: jenkins
         private-key: /home/nodepool/.ssh/id_rsa
-  - name: tripleo-test-cloud
+  - name: tripleo-test-cloud-hp1
     service-type: 'compute'
     service-name: 'nova'
     username: '<%= tripleo_username %>'
     password: '<%= tripleo_password %>'
     project-id: '<%= tripleo_project %>'
-    auth-url: 'https://ci-overcloud.tripleo.org:13000/v2.0'
+    auth-url: 'https://ci-overcloud.hp1.tripleo.org:13000/v2.0'
     boot-timeout: 120
-    max-servers: 0
+    max-servers: 90
     rate: 0.001
     networks:
-      - net-id: a395fac5-adec-4ab9-a605-963558349cfd
-      - net-id: 063ec9df-2fec-4723-8d4b-92c60193bd08
+      - net-label: default-net
+      - net-label: tripleo-bm-test
     images:
       - name: tripleo-precise
         base-image: 'Ubuntu Precise 12.04 LTS Server 64-bit'
@@ -988,8 +1020,8 @@ providers:
     max-servers: 60
     rate: 0.001
     networks:
-      - net-id: 505a106c-7d65-44a7-b3e7-99bb49d2ebab
-      - net-id: deedbc59-a076-4d9c-94a8-21fc5a7b8e0b
+      - net-label: default-net
+      - net-label: tripleo-bm-test
     images:
       - name: tripleo-precise
         base-image: 'Ubuntu Precise 12.04 LTS Server 64-bit'
@@ -1051,6 +1083,19 @@ targets:
       credentials-id: '<%= jenkins_credentials_id %>'
 
 diskimages:
+  - name: devstack-trusty
+    elements:
+      - ubuntu
+      - vm
+      - openstack-repos
+      - puppet
+      - nodepool-base
+      - node-devstack
+    release: trusty
+    env-vars:
+      TMPDIR: /opt/dib_tmp
+      DIB_IMAGE_CACHE: /opt/dib_cache
+      QEMU_IMG_OPTIONS: compat=0.10
   - name: devstack-trusty-dib
     elements:
       - ubuntu
@@ -1063,6 +1108,20 @@ diskimages:
     env-vars:
       TMPDIR: /opt/dib_tmp
       DIB_IMAGE_CACHE: /opt/dib_cache
+      QEMU_IMG_OPTIONS: compat=0.10
+  - name: devstack-precise
+    elements:
+      - ubuntu
+      - vm
+      - openstack-repos
+      - puppet
+      - nodepool-base
+      - node-devstack
+    release: precise
+    env-vars:
+      TMPDIR: /opt/dib_tmp
+      DIB_IMAGE_CACHE: /opt/dib_cache
+      QEMU_IMG_OPTIONS: compat=0.10
   - name: devstack-precise-dib
     elements:
       - ubuntu
@@ -1075,6 +1134,7 @@ diskimages:
     env-vars:
       TMPDIR: /opt/dib_tmp
       DIB_IMAGE_CACHE: /opt/dib_cache
+      QEMU_IMG_OPTIONS: compat=0.10
   - name: devstack-centos7-dib
     elements:
       - centos7
@@ -1086,3 +1146,4 @@ diskimages:
     env-vars:
       TMPDIR: /opt/dib_tmp
       DIB_IMAGE_CACHE: /opt/dib_cache
+      QEMU_IMG_OPTIONS: compat=0.10

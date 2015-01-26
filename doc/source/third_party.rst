@@ -12,14 +12,11 @@ supplied by OpenStack's Jenkins setup.  It is also possible for these
 systems to feed information back into Gerrit and they can also leave
 non-gating votes on Gerrit review requests.
 
-An example of one such system is `Smokestack <https://smokestack.openstack.org/>`_.
-Smokestack reads the Gerrit event stream and runs its own tests on the commits.
-If one of the tests fails it will publish information and links to the failure
-on the review in Gerrit.
-
-All accounts must have a wikipage entry
+There are several examples of systems that read the Gerrit event stream
+and run their own tests on the commits
 `on this page <https://wiki.openstack.org/wiki/ThirdPartySystems>`_.
-Details are below under Requirements.
+For each patch set the third party system tests, the system adds a comment
+in Gerrit with a summary of the test result and links to the test artifacts.
 
 Requirements
 ------------
@@ -44,7 +41,8 @@ Requirements
 
 * Publish contact information for the maintainers.
 
-  * Follow the instructions on the `ThirdPartySystems wiki page
+  * All accounts must have a wikipage entry. Follow the instructions on
+    the `ThirdPartySystems wiki page
     <https://wiki.openstack.org/wiki/ThirdPartySystems>`_ to add your
     system.  When complete, there should be a page dedicated to your
     system with a URL like:
@@ -153,7 +151,7 @@ Creating a Service Account
 In order to post comments as a Third Party CI System and eventually verify
 your build status on Gerrit patches, you will need a dedicated Gerrit
 CI account. You will need to create this account in our OpenID provider
-`Launchpad <https://launchpad.net>`. You may already have an existing
+`Launchpad <https://launchpad.net>`_. You may already have an existing
 personal account in Launchpad, but you should create a new and entirely
 separate account for this purpose.
 
@@ -329,3 +327,22 @@ chance of success if you follow these steps:
   your system should be able to vote, the release group for that program
   or project can add you to the <project>-ci group specific to that
   program/project.
+
+Third Party - FAQ
+-----------------
+
+* Q: How do you serve the content of compressed logs so they are rendered within
+     the browser, rather than presenting a download prompt to the user?
+
+  A: Add the following lines to your web server conf file::
+
+        RewriteEngine On
+        RewriteCond   %{HTTP:Accept-Encoding} gzip
+        RewriteCond   %{LA-U:REQUEST_FILENAME}.gz -f
+        RewriteRule   ^(.+)$ $1.gz [L]
+        <FilesMatch ".*\.gz$">
+          ForceType text/html
+          AddDefaultCharset UTF-8
+          AddEncoding x-gzip gz
+        </FilesMatch>
+

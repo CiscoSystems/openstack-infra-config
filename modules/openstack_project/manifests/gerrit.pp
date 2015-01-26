@@ -69,10 +69,12 @@ class openstack_project::gerrit (
   $cgit = false,
   $web_repo_url = '',
   $secondary_index = true,
+  $afs = false,
 ) {
   class { 'openstack_project::server':
     iptables_public_tcp_ports => [80, 443, 29418],
     sysadmins                 => $sysadmins,
+    afs                       => $afs,
   }
 
   class { 'jeepyb::openstackwatch':
@@ -175,6 +177,14 @@ class openstack_project::gerrit (
         name  => 'gitsha',
         match => '(<p>|[\\s(])([0-9a-f]{40})(</p>|[\\s.,;:)])',
         html  => '$1<a href=\"#q,$2,n,z\">$2</a>$3',
+      },
+    ],
+    trackingids                         => [
+      {
+        name   => 'storyboard',
+        footer => 'story:',
+        match  => '\\#?(\\d+)',
+        system => 'Storyboard',
       },
     ],
     war                                 => $war,

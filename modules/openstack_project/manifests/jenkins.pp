@@ -13,11 +13,12 @@ class openstack_project::jenkins (
   $ssl_cert_file_contents = '',
   $ssl_key_file_contents = '',
   $ssl_chain_file_contents = '',
+  $jenkins_ssh_public_key = $openstack_project::jenkins_ssh_key,
   $jenkins_ssh_private_key = '',
   $zmq_event_receivers = [],
   $sysadmins = [],
   $project_config_repo = '',
-) {
+) inherits openstack_project {
   include openstack_project
 
   $iptables_rule = regsubst ($zmq_event_receivers, '^(.*)$', '-m state --state NEW -m tcp -p tcp --dport 8888 -s \1 -j ACCEPT')
@@ -54,29 +55,26 @@ class openstack_project::jenkins (
     ssl_key_file_contents   => $ssl_key_file_contents,
     ssl_chain_file_contents => $ssl_chain_file_contents,
     jenkins_ssh_private_key => $jenkins_ssh_private_key,
-    jenkins_ssh_public_key  => $openstack_project::jenkins_ssh_key,
+    jenkins_ssh_public_key  => $jenkins_ssh_public_key,
   }
 
   jenkins::plugin { 'build-timeout':
     version => '1.14',
   }
   jenkins::plugin { 'copyartifact':
-    version => '1.32.1',
+    version => '1.22',
   }
   jenkins::plugin { 'dashboard-view':
-    version => '2.9.4',
-  }
-  jenkins::plugin { 'envinject':
-    version => '1.90',
+    version => '2.3',
   }
   jenkins::plugin { 'gearman-plugin':
     version => '0.1.1',
   }
   jenkins::plugin { 'git':
-    version => '2.3.1',
+    version => '1.1.23',
   }
   jenkins::plugin { 'greenballs':
-    version => '1.14',
+    version => '1.12',
   }
   jenkins::plugin { 'extended-read-permission':
     version => '1.0',
@@ -89,34 +87,34 @@ class openstack_project::jenkins (
 #    version => '1.9',
 #  }
   jenkins::plugin { 'jobConfigHistory':
-    version => '2.10',
+    version => '1.13',
   }
   jenkins::plugin { 'monitoring':
-    version => '1.54.0',
+    version => '1.40.0',
   }
   jenkins::plugin { 'nodelabelparameter':
-    version => '1.5.1',
+    version => '1.2.1',
   }
   jenkins::plugin { 'notification':
-    version => '1.7',
+    version => '1.4',
   }
   jenkins::plugin { 'openid':
-    version => '2.1.1',
+    version => '1.5',
   }
   jenkins::plugin { 'postbuildscript':
     version => '0.16',
   }
   jenkins::plugin { 'publish-over-ftp':
-    version => '1.11',
+    version => '1.7',
   }
   jenkins::plugin { 'simple-theme-plugin':
-    version => '0.3',
+    version => '0.2',
   }
   jenkins::plugin { 'timestamper':
-    version => '1.5.14',
+    version => '1.3.1',
   }
   jenkins::plugin { 'token-macro':
-    version => '1.10',
+    version => '1.5.1',
   }
 
   if $manage_jenkins_jobs == true {

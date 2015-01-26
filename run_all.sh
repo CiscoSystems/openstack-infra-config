@@ -14,6 +14,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# If updating the puppet system-config repo or installing puppet modules
+# fails then abort the puppet run as we will not get the results we
+# expect.
+set -e
 
 cd /opt/system-config/production
 git fetch -a && git reset -q --hard @{u}
@@ -23,8 +27,16 @@ git fetch -a && git reset -q --hard @{u}
 # some times
 touch manifests/site.pp
 
-# Run this as an external script so that the above pull will get new changes
-ansible-playbook /etc/ansible/remote_puppet.yaml >> /var/log/puppet_run_all.log 2>&1
+# It's possible for connectivity to a server or manifest application to break
+# for indeterminate periods of time, so the playbooks should be run without
+# errexit
+set +e
+
+# First run the git/gerrit sequence, since it's important that they all work
+# together
+ansible-playbook /etc/ansible/playbooks/remote_puppet_git.yaml >> /var/log/puppet_run_all.log 2>&1
 # Run AFS changes separately so we can make sure to only do one at a time
 # (turns out quorum is nice to have)
-ansible-playbook -f 1 /etc/ansible/remote_puppet_afs.yaml >> /var/log/puppet_run_all.log 2>&1
+ansible-playbook -f 1 /etc/ansible/playbooks/remote_puppet_afs.yaml >> /var/log/puppet_run_all.log 2>&1
+# Run everything else. We do not care if the other things worked
+ansible-playbook /etc/ansible/playbooks/remote_puppet_else.yaml >> /var/log/puppet_run_all.log 2>&1

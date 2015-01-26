@@ -1,5 +1,4 @@
-# Copyright 2012-2013 Hewlett-Packard Development Company, L.P.
-# Copyright 2013 OpenStack Foundation
+# Copyright 2014 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,29 +12,29 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# == Class: subunit2sql
+# == Class: mysql_proxy::server
 #
-class subunit2sql::server (
-  $db_dialect = 'mysql',
-  $db_user = 'subunit2sql',
-  $db_pass,
+class mysql_proxy::server (
   $db_host,
-  $db_port = '3306',
-  $db_name = 'subunit2sql',
+  $db_port='3306',
 ) {
 
-  file { '/etc/subunit2sql.conf':
+  file { '/etc/mysql-proxy/mysql-proxy.conf':
+    ensure  => absent,
+  }
+
+  file { "/etc/init.d/simpleproxy-mysql":
     ensure  => present,
     owner   => 'root',
     group   => 'root',
     mode    => '0555',
-    content => template('subunit2sql/subunit2sql.conf.erb'),
+    content => template('mysql_proxy/simpleproxy-mysql.init.erb'),
+    require => Package['simpleproxy']
   }
 
-  exec { 'upgrade_subunit2sql_db':
-    command     => 'subunit2sql-db-manage --config-file /etc/subunit2sql.conf upgrade head',
-    path        => '/usr/local/bin:/usr/bin:/bin/',
-    subscribe   => Package['subunit2sql'],
-    refreshonly => true,
+  service{ 'simpleproxy-mysql':
+    enable      => true,
+    hasrestart  => true,
+    require    => File["/etc/init.d/simpleproxy-mysql"],
   }
 }

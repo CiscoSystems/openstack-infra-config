@@ -49,7 +49,7 @@ class openstack_project::review_dev (
     ssh_project_rsa_pubkey_contents => $ssh_project_rsa_pubkey_contents,
     email                           => 'review-dev@openstack.org',
     war                             =>
-      'http://tarballs.openstack.org/ci/test/gerrit-v2.8.4.17.13ac409.war',
+      'http://tarballs.openstack.org/ci/test/gerrit-v2.8.4.15.6dc8444.war',
     contactstore                    => $contactstore,
     contactstore_appsec             => $contactstore_appsec,
     contactstore_pubkey             => $contactstore_pubkey,
@@ -87,8 +87,16 @@ class openstack_project::review_dev (
         threads              => '4',
         mirror               => true,
       },
+      {
+        name                 => 'afs',
+        url                  => 'file:///afs/openstack.org/mirror/git-sandbox/',
+        replicationDelay     => '0',
+        threads              => '4',
+        mirror               => true,
+      },
     ],
     require                         => $::project_config::config_dir,
+    afs                             => true,
   }
 
   gerrit::plugin { 'javamelody':

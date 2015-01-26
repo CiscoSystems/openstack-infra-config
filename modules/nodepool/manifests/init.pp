@@ -73,8 +73,14 @@ class nodepool (
   }
 
   $packages = [
+    'build-essential',
+    'libffi-dev',
+    'libssl-dev',
     'kpartx',
     'qemu-utils',
+    'libgmp-dev',         # transitive dep of paramiko
+    # debootstrap is needed for building Debian images
+    'debootstrap',
   ]
 
   package { $packages:
@@ -126,7 +132,11 @@ class nodepool (
     subscribe   => Vcsrepo['/opt/nodepool'],
     require     => [
       Class['pip'],
+      Package['build-essential'],
+      Package['libffi-dev'],
+      Package['libssl-dev'],
       Package['python-lxml'],
+      Package['libgmp-dev'],
     ],
   }
 

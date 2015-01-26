@@ -92,11 +92,12 @@ system-config repository::
 
 That should turn the system you are logged into into an etherpad
 server with the same configuration as that used by the OpenStack
-project.  You can edit the contents of the system-config repo and
-iterate as needed.  When you're ready to propose the change for review,
-you can propose the change with git-review.  See the `Gerrit Workflow wiki
-article <https://wiki.openstack.org/wiki/GerritWorkflow>`_ for more
-information.
+project. You can edit the contents of the system-config repo and
+iterate ``puppet apply`` as needed. When you're ready to propose the
+change for review, you can propose the change with git-review. See the
+`Development workflow section in the Developer's Guide
+<http://docs.openstack.org/infra/manual/developers.html#development-workflow>`_
+for more information.
 
 Adding a New Server
 ===================
@@ -275,6 +276,21 @@ tool is run from a checkout on the puppetmaster - please see :file:`launch/READM
 for detailed instructions.
 
 .. _cinder:
+
+Disable/Enable Puppet
+=====================
+
+You should normally not make manual changes to servers, but instead,
+make changes through puppet.  However, under some circumstances, you
+may need to temporarily make a manual change to a puppet-managed
+resource on a server.  In that case, run the following command on that
+server to disable puppet::
+
+  sudo puppet agent --disable
+
+When you are ready for puppet to run again, use::
+
+  sudo puppet agent --enable
 
 Cinder Volume Management
 ========================

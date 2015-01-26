@@ -7,8 +7,8 @@ Gerrit
 
 Gerrit is the code review system used by the OpenStack project.  For a
 full description of how the system fits into the OpenStack workflow,
-see `the GerritJenkinsGit wiki article
-<https://wiki.openstack.org/wiki/GerritJenkinsGit>`_.
+see `the development workflow guide
+<http://docs.openstack.org/infra/manual/developers.html#development-workflow>`_.
 
 This section describes how Gerrit is configured for use in the
 OpenStack project and the tools used to manage that configuration.
@@ -482,7 +482,7 @@ To rename a project:
    changing, gate jobs may fail due to outdated remote URLs. Clear
    the workspaces on persistent Jenkins slaves to mitigate this::
 
-     sudo ansible-playbook -f 10 /etc/ansible/clean_workspaces.yaml --extra-vars "project=PROJECTNAME"
+     sudo ansible-playbook -f 10 /etc/ansible/playbooks/clean_workspaces.yaml --extra-vars "project=PROJECTNAME"
 
 #. Again, if this is an org move rather than a rename and the GitHub
    project has been created but is empty, trigger replication to
